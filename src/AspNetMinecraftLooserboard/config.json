@@ -1,5 +1,9 @@
 {
   "AppSettings": {
     "SiteTitle": "Minecraft Looserboard"
-  }
+  },
+  "Minecraft": {
+		"LogsDirectoryPath": "/opt/minecraft/logs",
+		"JsonDbFilePath":  "database.json"
+	}
 }

@@ -1,0 +1,35 @@
+﻿@model Minecraft4Dev.Web.ViewModels.PlayerDetailsViewModel
+@{
+    ViewBag.Title = "Minecraft Player details";
+}
+
+<div class="row">
+    <h1>Details for player @Model.Name</h1>
+    <hr />
+</div>
+
+<div class="row">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var log in Model.DeathLogs)
+            {
+                <tr>
+                    <td>@log.Date</td>
+                    <td>@log.Reason</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="row">
+    <p>
+        @Html.ActionLink("Back to the Looserboard", "Index")
+    </p>
+</div>

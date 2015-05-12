@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNet.Builder;
+﻿using System;
+using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Diagnostics;
 using Microsoft.AspNet.Hosting;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
+using Microsoft.Framework.Logging.Console;
+using System.Threading;
+using Minecraft4Dev.Web.Persistence;
+using Minecraft4Dev.Web.Services;
 
 namespace AspNetMinecraftLooserboard
 {
@@ -22,6 +27,7 @@ namespace AspNetMinecraftLooserboard
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
                 configuration.AddUserSecrets();
             }
+
             configuration.AddEnvironmentVariables();
             Configuration = configuration;
         }
@@ -33,6 +39,17 @@ namespace AspNetMinecraftLooserboard
         {
             // Add Application settings to the services container.
             services.Configure<AppSettings>(Configuration.GetSubKey("AppSettings"));
+            
+            // Initialize Minecraft configuration and start logs parser
+            string minecraftLogsDirectoryPath = Configuration.Get("Minecraft:LogsDirectoryPath");
+            string minecraftJsonDatabaseFilePath = Configuration.Get("Minecraft:JsonDbFilePath");
+
+            var minecraftLogsDatabase = MinecraftLogsDatabase.LoadFrom(minecraftJsonDatabaseFilePath);
+            //var minecraftLogsParserService = new MinecraftLogsParserService(minecraftLogsDirectoryPath, minecraftLogsDatabase);
+            //minecraftLogsParserService.Start(CancellationToken.None);
+
+            // add the database in the dependency configuration
+            services.AddInstance<MinecraftLogsDatabase>(minecraftLogsDatabase);
 
             // Add MVC services to the services container.
             services.AddMvc();
@@ -68,7 +85,7 @@ namespace AspNetMinecraftLooserboard
                 routes.MapRoute(
                     name: "default",
                     template: "{controller}/{action}/{id?}",
-                    defaults: new { controller = "Home", action = "Index" });
+                    defaults: new { controller = "Looserboard", action = "Index" });
             });
         }
     }
